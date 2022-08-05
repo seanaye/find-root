@@ -15,8 +15,9 @@ export async function* walkUpwards(start: URL) {
   }
 }
 
-export async function getRoot(filename: string, start: URL) {
-  for await (const dir of walkUpwards(start)) {
+export async function getRoot(filename: string, start: URL | string) {
+  const s = typeof start === "string" ? new URL(start, "file://") : start;
+  for await (const dir of walkUpwards(s)) {
     const fileUrl = new URL(filename, dir);
     const res = await read(fileUrl);
     if (res.isOk()) {
